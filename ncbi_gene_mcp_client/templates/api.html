@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}API Documentation - NCBI Gene MCP Client{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="text-center mb-5">
+                <i class="fas fa-code fa-3x text-primary mb-3"></i>
+                <h1>API Documentation</h1>
+                <p class="lead">RESTful API endpoints for programmatic access to gene data</p>
+            </div>
+
+            <!-- Base URL
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-link"></i> Base URL</h5>
+                </div>
+                <div class="card-body">
+                    <code>http://localhost:8000/api</code>
+                </div>
+            </div> -->
+
+            <!-- Endpoints -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-list"></i> Available Endpoints</h5>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- Health Check -->
+                    <div class="mb-4">
+                        <h6><span class="badge bg-success">GET</span> /health</h6>
+                        <p class="text-muted">Health check endpoint</p>
+                        <div class="bg-light p-3 rounded">
+                            <strong>Response:</strong>
+                            <pre><code>{
+  "status": "healthy",
+  "service": "NCBI Gene MCP Client"
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Search Genes -->
+                    <div class="mb-4">
+                        <h6><span class="badge bg-primary">POST</span> /search/genes</h6>
+                        <p class="text-muted">Search for genes using a query</p>
+                        <div class="bg-light p-3 rounded">
+                            <strong>Request Body (form-data):</strong>
+                            <pre><code>{
+  "query": "BRCA1[gene] AND human[organism]",
+  "max_results": 20
+}</code></pre>
+                            <strong>Response:</strong>
+                            <pre><code>{
+  "success": true,
+  "data": {
+    "count": 1,
+    "ids": ["672"],
+    "query_translation": "BRCA1[gene] AND \"Homo sapiens\"[Organism]",
+    "query": "BRCA1[gene] AND human[organism]"
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Get Gene Info -->
+                    <div class="mb-4">
+                        <h6><span class="badge bg-info">GET</span> /gene/{gene_id}</h6>
+                        <p class="text-muted">Get detailed information for a specific gene</p>
+                        <div class="bg-light p-3 rounded">
+                            <strong>Example:</strong> <code>GET /api/gene/672</code><br>
+                            <strong>Response:</strong>
+                            <pre><code>{
+  "success": true,
+  "data": {
+    "gene_id": "672",
+    "name": "BRCA1",
+    "description": "BRCA1 DNA repair associated",
+    "organism": "Homo sapiens",
+    "chromosome": "17",
+    "map_location": "17q21.31",
+    "gene_type": "genomic",
+    "other_aliases": ["BRCAI", "BRCC1", "BROVCA1"],
+    "summary": "This gene encodes a 190 kD nuclear phosphoprotein..."
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Search by Symbol -->
+                    <div class="mb-4">
+                        <h6><span class="badge bg-warning">POST</span> /search/symbol</h6>
+                        <p class="text-muted">Search genes by symbol with optional organism filter</p>
+                        <div class="bg-light p-3 rounded">
+                            <strong>Request Body (form-data):</strong>
+                            <pre><code>{
+  "symbol": "BRCA1",
+  "organism": "human"  // optional
+}</code></pre>
+                            <strong>Response:</strong>
+                            <pre><code>{
+  "success": true,
+  "data": {
+    "genes": [
+      {
+        "gene_id": "672",
+        "name": "BRCA1",
+        "description": "BRCA1 DNA repair associated",
+        "organism": "Homo sapiens",
+        "chromosome": "17",
+        ...
+      }
+    ],
+    "count": 1,
+    "symbol": "BRCA1",
+    "organism": "human"
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Examples -->
+                    <div class="mb-4">
+                        <h6><span class="badge bg-secondary">GET</span> /examples</h6>
+                        <p class="text-muted">Get example queries and gene IDs for testing</p>
+                        <div class="bg-light p-3 rounded">
+                            <strong>Response:</strong>
+                            <pre><code>{
+  "search_examples": [
+    "BRCA1[gene] AND human[organism]",
+    "breast cancer[disease] AND human[organism]",
+    "TP53",
+    "diabetes[disease]",
+    "APOE[gene]"
+  ],
+  "gene_examples": [
+    {"id": "672", "name": "BRCA1", "description": "Breast cancer gene"},
+    {"id": "7157", "name": "TP53", "description": "Tumor suppressor"},
+    ...
+  ],
+  "organisms": ["human", "Homo sapiens", "mouse", "Mus musculus", ...]
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Handling -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Error Handling</h5>
+                </div>
+                <div class="card-body">
+                    <p>All API endpoints return JSON responses. In case of errors:</p>
+                    <div class="bg-light p-3 rounded">
+                        <strong>Error Response:</strong>
+                        <pre><code>{
+  "detail": "Error message describing what went wrong"
+}</code></pre>
+                    </div>
+                    <p class="mt-3">Common HTTP status codes:</p>
+                    <ul>
+                        <li><code>200</code> - Success</li>
+                        <li><code>400</code> - Bad Request (invalid parameters)</li>
+                        <li><code>404</code> - Not Found (invalid gene ID)</li>
+                        <li><code>500</code> - Internal Server Error (NCBI API issues)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Usage Examples -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-terminal"></i> Usage Examples</h5>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- cURL Examples -->
+                    <h6>cURL Examples</h6>
+                    <div class="bg-dark text-light p-3 rounded mb-3">
+                        <code># Search for genes<br>
+curl -X POST "http://localhost:8000/api/search/genes" \<br>
+&nbsp;&nbsp;&nbsp;&nbsp; -F "query=BRCA1" \<br>
+&nbsp;&nbsp;&nbsp;&nbsp; -F "max_results=10"<br><br>
+
+# Get gene information<br>
+curl "http://localhost:8000/api/gene/672"<br><br>
+
+# Search by symbol<br>
+curl -X POST "http://localhost:8000/api/search/symbol" \<br>
+&nbsp;&nbsp;&nbsp;&nbsp; -F "symbol=BRCA1" \<br>
+&nbsp;&nbsp;&nbsp;&nbsp; -F "organism=human"</code>
+                    </div>
+
+                    <!-- Python Examples -->
+                    <h6>Python Examples</h6>
+                    <div class="bg-dark text-light p-3 rounded mb-3">
+                        <code>import requests<br><br>
+
+# Search for genes<br>
+response = requests.post(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"http://localhost:8000/api/search/genes",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data={"query": "BRCA1", "max_results": 10}<br>
+)<br>
+print(response.json())<br><br>
+
+# Get gene information<br>
+response = requests.get("http://localhost:8000/api/gene/672")<br>
+gene_data = response.json()["data"]<br>
+print(f"Gene: {gene_data['name']}")</code>
+                    </div>
+
+                    <!-- JavaScript Examples -->
+                    <h6>JavaScript Examples</h6>
+                    <div class="bg-dark text-light p-3 rounded">
+                        <code>// Search for genes<br>
+const formData = new FormData();<br>
+formData.append('query', 'BRCA1');<br>
+formData.append('max_results', '10');<br><br>
+
+fetch('/api/search/genes', {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;method: 'POST',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;body: formData<br>
+})<br>
+.then(response => response.json())<br>
+.then(data => console.log(data));<br><br>
+
+// Get gene information<br>
+fetch('/api/gene/672')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.then(response => response.json())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.then(data => console.log(data.data));</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rate Limiting -->
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-tachometer-alt"></i> Rate Limiting</h5>
+                </div>
+                <div class="card-body">
+                    <p>This API follows NCBI's guidelines for rate limiting:</p>
+                    <ul>
+                        <li><strong>Without API key:</strong> Maximum 3 requests per second</li>
+                        <li><strong>With API key:</strong> Maximum 10 requests per second</li>
+                        <li><strong>Recommendation:</strong> Add delays between requests to avoid hitting limits</li>
+                    </ul>
+                    <div class="alert alert-warning">
+                        <strong>Note:</strong> If you exceed the rate limit, requests may be delayed or return error responses.
+                    </div>
+                </div>
+            </div><br><br>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

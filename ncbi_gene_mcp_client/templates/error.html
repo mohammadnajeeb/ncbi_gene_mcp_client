@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Error - NCBI Gene MCP Client{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto text-center">
+            <i class="fas fa-exclamation-triangle fa-4x text-warning mb-4"></i>
+            <h2>Oops! Something went wrong</h2>
+            
+            {% if gene_id %}
+            <div class="alert alert-danger">
+                <strong>Gene ID {{ gene_id }}:</strong> {{ error }}
+            </div>
+            {% else %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+            {% endif %}
+            
+            <p class="text-muted mb-4">
+                This could be due to:
+            </p>
+            <ul class="list-unstyled text-start">
+                <li><i class="fas fa-wifi text-muted"></i> Network connectivity issues</li>
+                <li><i class="fas fa-database text-muted"></i> NCBI database temporarily unavailable</li>
+                <li><i class="fas fa-search text-muted"></i> Invalid gene ID or search query</li>
+                <li><i class="fas fa-clock text-muted"></i> Request timeout</li>
+            </ul>
+            
+            <div class="mt-4">
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+                <button onclick="history.back()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Go Back
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

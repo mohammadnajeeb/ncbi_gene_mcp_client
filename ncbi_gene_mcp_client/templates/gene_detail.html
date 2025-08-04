@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}{{ gene.name }} - Gene Details{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-dna"></i> {{ gene.name }}
+                        <small class="opacity-75">(Gene ID: {{ gene.gene_id }})</small>
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-info-circle text-info"></i> Basic Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Gene Symbol:</strong></td>
+                                    <td>{{ gene.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Description:</strong></td>
+                                    <td>{{ gene.description }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Organism:</strong></td>
+                                    <td>{{ gene.organism }}</td>
+                                </tr>
+                                {% if gene.gene_type %}
+                                <tr>
+                                    <td><strong>Gene Type:</strong></td>
+                                    <td>{{ gene.gene_type }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-map-marker-alt text-warning"></i> Genomic Location</h6>
+                            <table class="table table-sm">
+                                {% if gene.chromosome %}
+                                <tr>
+                                    <td><strong>Chromosome:</strong></td>
+                                    <td>{{ gene.chromosome }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if gene.map_location %}
+                                <tr>
+                                    <td><strong>Map Location:</strong></td>
+                                    <td>{{ gene.map_location }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                            
+                            {% if gene.other_aliases %}
+                            <h6><i class="fas fa-tags text-success"></i> Other Names</h6>
+                            <div class="mb-3">
+                                {% for alias in gene.other_aliases[:10] %}
+                                    <span class="badge bg-secondary me-1">{{ alias }}</span>
+                                {% endfor %}
+                                {% if gene.other_aliases|length > 10 %}
+                                    <small class="text-muted">... and {{ gene.other_aliases|length - 10 }} more</small>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if gene.summary %}
+                    <div class="mt-4">
+                        <h6><i class="fas fa-file-text text-primary"></i> Gene Summary</h6>
+                        <div class="alert alert-light">
+                            <p class="mb-0">{{ gene.summary }}</p>
+                            <small class="text-muted">Source: NCBI RefSeq</small>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="mt-4">
+                        <h6><i class="fas fa-external-link-alt text-info"></i> External Links</h6>
+                        <div class="btn-group" role="group">
+                            <a href="https://www.ncbi.nlm.nih.gov/gene/{{ gene.gene_id }}" 
+                               target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-external-link-alt"></i> NCBI Gene
+                            </a>
+                            <a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene={{ gene.name }}" 
+                               target="_blank" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-external-link-alt"></i> GeneCards
+                            </a>
+                            <a href="https://www.ensembl.org/Multi/Search/Results?q={{ gene.name }}" 
+                               target="_blank" class="btn btn-outline-info btn-sm">
+                                <i class="fas fa-external-link-alt"></i> Ensembl
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="mt-3">
+                <a href="/" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Search
+                </a>
+                <button class="btn btn-primary" onclick="shareGene()">
+                    <i class="fas fa-share"></i> Share
+                </button>
+                <button class="btn btn-success" onclick="exportJSON()">
+                    <i class="fas fa-download"></i> Export JSON
+                </button>
+            </div>
+            <br>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Related searches -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-search"></i> Related Searches</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="/?query={{ gene.name }}[gene] AND {{ gene.organism }}[organism]" 
+                           class="list-group-item list-group-item-action">
+                            Similar genes in {{ gene.organism }}
+                        </a>
+                        <a href="/?query={{ gene.name }}[gene]" 
+                           class="list-group-item list-group-item-action">
+                            {{ gene.name }} in all organisms
+                        </a>
+                        {% if gene.chromosome %}
+                        <a href="/?query=chromosome {{ gene.chromosome }}[chromosome] AND {{ gene.organism }}[organism]" 
+                           class="list-group-item list-group-item-action">
+                            Other genes on chromosome {{ gene.chromosome }}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gene statistics -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-chart-bar"></i> Quick Stats</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="border-end">
+                                <h5 class="text-primary">{{ gene.gene_id }}</h5>
+                                <small class="text-muted">Gene ID</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="text-success">{{ gene.other_aliases|length if gene.other_aliases else 0 }}</h5>
+                            <small class="text-muted">Aliases</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cross-species comparison -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-globe"></i> Cross-Species</h6>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted">Find this gene in other organisms:</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary btn-sm" onclick="searchInOrganism('human')">
+                            <i class="fas fa-user"></i> Human
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="searchInOrganism('mouse')">
+                            <i class="fas fa-mouse"></i> Mouse
+                        </button>
+                        <button class="btn btn-outline-info btn-sm" onclick="searchInOrganism('rat')">
+                            <i class="fas fa-rat"></i> Rat
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JSON Modal -->
+    <div class="modal fade" id="jsonModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Gene Data (JSON)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <pre><code id="jsonContent">{{ gene_json }}</code></pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="copyJSON()">Copy to Clipboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function shareGene() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ gene.name }} - Gene Information',
+            text: '{{ gene.description }}',
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copy URL to clipboard
+        navigator.clipboard.writeText(window.location.href).then(function() {
+            alert('Gene URL copied to clipboard!');
+        });
+    }
+}
+
+function exportJSON() {
+    $('#jsonModal').modal('show');
+}
+
+function copyJSON() {
+    const jsonContent = document.getElementById('jsonContent').textContent;
+    navigator.clipboard.writeText(jsonContent).then(function() {
+        alert('JSON copied to clipboard!');
+    });
+}
+
+function searchInOrganism(organism) {
+    const geneName = '{{ gene.name }}';
+    window.open(`/?symbol=${geneName}&organism=${organism}`, '_blank');
+}
+</script>
+{% endblock %}

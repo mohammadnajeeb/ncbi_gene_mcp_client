@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}About - NCBI Gene MCP Client{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="text-center mb-5">
+                <i class="fas fa-dna fa-4x text-primary mb-3"></i>
+                <h1>About NCBI Gene MCP Client</h1>
+                <p class="lead">A comprehensive web interface for exploring genetic data from the NCBI Entrez database</p>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-info-circle text-info"></i> What is this tool?</h5>
+                    <p>The NCBI Gene MCP Client is a modern web application that provides easy access to gene and protein information from the National Center for Biotechnology Information (NCBI) Entrez database. It offers multiple ways to search and explore genetic data through an intuitive interface.</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-search text-primary"></i> Features</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> <strong>Gene Search</strong> - Find genes using flexible queries</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>Symbol Search</strong> - Search by gene symbols</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>Detailed Information</strong> - Comprehensive gene profiles</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>Cross-Species</strong> - Compare across organisms</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> <strong>RESTful API</strong> - Programmatic access</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>JSON Export</strong> - Download gene data</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>MCP Protocol</strong> - Model Context Protocol support</li>
+                                <li><i class="fas fa-check text-success"></i> <strong>Rate Limited</strong> - Respects NCBI guidelines</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-lightbulb text-warning"></i> How to Use</h5>
+                    <div class="accordion" id="usageAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                    Gene Search
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#usageAccordion">
+                                <div class="accordion-body">
+                                    <p>Use the gene search to find genes using flexible queries:</p>
+                                    <ul>
+                                        <li><code>BRCA1</code> - Find genes matching BRCA1</li>
+                                        <li><code>breast cancer[disease]</code> - Find genes associated with breast cancer</li>
+                                        <li><code>BRCA1[gene] AND human[organism]</code> - Find BRCA1 specifically in humans</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                    Symbol Search
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#usageAccordion">
+                                <div class="accordion-body">
+                                    <p>Search for genes by their official symbols:</p>
+                                    <ul>
+                                        <li>Enter a gene symbol like <code>BRCA1</code>, <code>TP53</code>, or <code>APOE</code></li>
+                                        <li>Optionally filter by organism (human, mouse, rat, etc.)</li>
+                                        <li>Get detailed results for all matching genes</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                    Gene by ID
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#usageAccordion">
+                                <div class="accordion-body">
+                                    <p>If you know the NCBI Gene ID, you can get detailed information directly:</p>
+                                    <ul>
+                                        <li><code>672</code> - BRCA1 gene</li>
+                                        <li><code>7157</code> - TP53 gene</li>
+                                        <li><code>348</code> - APOE gene</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!-- 
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-database text-success"></i> Data Source</h5>
+                    <p>All gene and protein information is retrieved from the <strong>NCBI Entrez</strong> database, which is maintained by the National Center for Biotechnology Information (NCBI), part of the United States National Library of Medicine (NLM).</p>
+                    <p>The data includes:</p>
+                    <ul>
+                        <li>Gene symbols and descriptions</li>
+                        <li>Chromosomal locations</li>
+                        <li>Alternative gene names and aliases</li>
+                        <li>Functional summaries</li>
+                        <li>Cross-references to other databases</li>
+                    </ul>
+                </div>
+            </div> -->
+
+            <!-- <div class="card mb-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-code text-primary"></i> Technical Details</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Frontend</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Bootstrap 5</li>
+                                <li><i class="fas fa-check text-success"></i> jQuery</li>
+                                <li><i class="fas fa-check text-success"></i> Font Awesome</li>
+                                <li><i class="fas fa-check text-success"></i> Responsive Design</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Backend</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> FastAPI</li>
+                                <li><i class="fas fa-check text-success"></i> Pydantic</li>
+                                <li><i class="fas fa-check text-success"></i> Python 3.8+</li>
+                                <li><i class="fas fa-check text-success"></i> NCBI E-utilities</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-shield-alt text-warning"></i> Rate Limiting & Best Practices</h5>
+                    <p>This application follows NCBI's guidelines for API usage:</p>
+                    <ul>
+                        <li><strong>Rate Limiting:</strong> Maximum 3 requests per second (10 with API key)</li>
+                        <li><strong>Caching:</strong> Results may be cached to improve performance</li>
+                        <li><strong>Attribution:</strong> Always credit NCBI as the data source</li>
+                        <li><strong>Fair Use:</strong> Please use responsibly for research purposes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-user text-info"></i> About the Developer</h5>
+                    <p><strong>Mohammad Najeeb</strong><br>
+                    📧 mona00002@uni-saarland.de</p>
+                    <p>This tool was developed as part of a bioinformatics demo research project to provide easy access to genetic information for researchers and students.</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-terminal text-dark"></i> CLI Usage</h5>
+                    <p>This tool also provides command-line interfaces for different use cases:</p>
+                    
+                    <h6><i class="fas fa-search"></i> Gene Search CLI</h6>
+                    <div class="bg-dark text-light p-3 rounded mb-3">
+                        <code># Search for genes<br>
+ncbi-gene-client search "BRCA1"<br>
+ncbi-gene-client search "breast cancer[disease]" --max-results 10<br><br>
+
+# Get gene information by ID<br>
+ncbi-gene-client get-gene 672<br><br>
+
+# Search by symbol<br>
+ncbi-gene-client search-symbol "TP53" --organism "human"</code>
+                    </div>
+
+                    <h6><i class="fas fa-server"></i> MCP Server</h6>
+                    <div class="bg-dark text-light p-3 rounded mb-3">
+                        <code># Start MCP server<br>
+ncbi-gene-mcp-server<br><br>
+
+# Run web interface<br>
+ncbi-gene-web</code>
+                    </div>
+
+                    <h6><i class="fas fa-download"></i> Installation</h6>
+                    <div class="bg-dark text-light p-3 rounded">
+                        <code># Install from source<br>
+git clone &lt;repository-url&gt;<br>
+cd ncbi_gene_mcp_client<br>
+pip install -e .</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-book text-primary"></i> Libraries & References</h5>
+                    
+                    <h6>Core Dependencies</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-link text-info"></i> <strong>FastAPI</strong> - <a href="https://fastapi.tiangolo.com/" target="_blank">https://fastapi.tiangolo.com/</a></li>
+                                <li><i class="fas fa-link text-info"></i> <strong>Pydantic</strong> - <a href="https://pydantic.dev/" target="_blank">https://pydantic.dev/</a></li>
+                                <li><i class="fas fa-link text-info"></i> <strong>Uvicorn</strong> - <a href="https://www.uvicorn.org/" target="_blank">https://www.uvicorn.org/</a></li>
+                                <li><i class="fas fa-link text-info"></i> <strong>Requests</strong> - <a href="https://requests.readthedocs.io/" target="_blank">https://requests.readthedocs.io/</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-link text-info"></i> <strong>Bootstrap 5</strong> - <a href="https://getbootstrap.com/" target="_blank">https://getbootstrap.com/</a></li>
+                                <li><i class="fas fa-link text-info"></i> <strong>jQuery</strong> - <a href="https://jquery.com/" target="_blank">https://jquery.com/</a></li>
+                                <li><i class="fas fa-link text-info"></i> <strong>Font Awesome</strong> - <a href="https://fontawesome.com/" target="_blank">https://fontawesome.com/</a></li>
+                                <li><i class="fas fa-link text-info"></i> <strong>Jinja2</strong> - <a href="https://jinja.palletsprojects.com/" target="_blank">https://jinja.palletsprojects.com/</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h6 class="mt-4">Data Sources & APIs</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-database text-success"></i> <strong>NCBI Entrez E-utilities</strong> - <a href="https://www.ncbi.nlm.nih.gov/books/NBK25497/" target="_blank">https://www.ncbi.nlm.nih.gov/books/NBK25497/</a></li>
+                        <li><i class="fas fa-database text-success"></i> <strong>NCBI Gene Database</strong> - <a href="https://www.ncbi.nlm.nih.gov/gene/" target="_blank">https://www.ncbi.nlm.nih.gov/gene/</a></li>
+                        <li><i class="fas fa-book text-warning"></i> <strong>Model Context Protocol</strong> - <a href="https://modelcontextprotocol.io/" target="_blank">https://modelcontextprotocol.io/</a></li>
+                    </ul>
+
+                    <h6 class="mt-4">Acknowledgments</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-robot text-purple"></i> <strong>GitHub Copilot</strong> - AI-assisted development - <a href="https://github.com/features/copilot" target="_blank">https://github.com/features/copilot</a></li>
+                        <li><i class="fas fa-code text-dark"></i> <strong>VS Code</strong> - <a href="https://code.visualstudio.com/" target="_blank">https://code.visualstudio.com/</a></li>
+                        <li><i class="fas fa-flask text-info"></i> <strong>Python 3.12</strong> - <a href="https://www.python.org/" target="_blank">https://www.python.org/</a></li>
+                    </ul>
+
+                    <div class="alert alert-secondary mt-3">
+                        <i class="fas fa-quote-left"></i> <strong>Citation:</strong> When using this tool in research, please cite NCBI as the primary data source: <br>
+                        <em>"Gene information retrieved from NCBI Gene database (https://www.ncbi.nlm.nih.gov/gene/)"</em>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5><i class="fas fa-rocket text-primary"></i> Get Started</h5>
+                    <p class="mb-3">Ready to explore genetic data? Choose your preferred interface:</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="/" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Web Interface
+                        </a>
+                        <a href="/api" class="btn btn-success">
+                            <i class="fas fa-code"></i> API Documentation
+                        </a>
+                        <a href="#" class="btn btn-outline-dark" onclick="navigator.clipboard.writeText('pip install ncbi-gene-mcp-client')">
+                            <i class="fas fa-terminal"></i> Copy Install Command
+                        </a>
+                    </div>
+                </div>
+            </div><br><br>
+        </div>
+    </div>
+</div>
+{% endblock %}

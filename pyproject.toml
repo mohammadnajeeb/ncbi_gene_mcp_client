@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ncbi_gene_mcp_client"
+version = "0.1.0"
+description = "MCP client for fetching gene metadata from NCBI Entrez"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Mohammad Najeeb", email = "mona00002@uni-saarland.de"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.25.0",
+    "pydantic>=2.0.0",
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "jinja2>=3.1.0",
+    "python-multipart>=0.0.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.800",
+]
+
+[project.scripts]
+ncbi-gene-client = "ncbi_gene_mcp_client.cli:main"
+ncbi-gene-mcp-server = "ncbi_gene_mcp_client.main:main"
+ncbi-gene-web = "ncbi_gene_mcp_client.web_app:main"
+
+
+
+[project.urls]
+Homepage = "https://github.com/mohammadnajeeb/Cookiecutter-MCPmed"
+Repository = "https://github.com/mohammadnajeeb/Cookiecutter-MCPmed"
+Documentation = "https://github.com/mohammadnajeeb/Cookiecutter-MCPmed#readme"
+Issues = "https://github.com/mohammadnajeeb/Cookiecutter-MCPmed/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ncbi_gene_mcp_client*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v" 

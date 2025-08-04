@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+
+{% block title %}Home - NCBI Gene MCP Client{% endblock %}
+
+{% block content %}
+<div class="search-form">
+    <div class="container">
+        <h1 class="text-center mb-4">
+            <i class="fas fa-dna"></i> NCBI Gene Explorer
+        </h1>
+        <p class="text-center mb-4">Search and explore gene information from the NCBI Entrez database</p>
+        
+        <!-- Search Tabs -->
+        <ul class="nav nav-pills nav-justified mb-4" id="searchTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="gene-search-tab" data-bs-toggle="pill" data-bs-target="#gene-search" type="button" role="tab">
+                    <i class="fas fa-search"></i> Gene Search
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="symbol-search-tab" data-bs-toggle="pill" data-bs-target="#symbol-search" type="button" role="tab">
+                    <i class="fas fa-tag"></i> Search by Symbol
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="gene-id-tab" data-bs-toggle="pill" data-bs-target="#gene-id" type="button" role="tab">
+                    <i class="fas fa-hashtag"></i> Gene by ID
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="searchTabsContent">
+            <!-- Gene Search Tab -->
+            <div class="tab-pane fade show active" id="gene-search" role="tabpanel">
+                <form id="geneSearchForm">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" id="searchQuery" name="query" 
+                                       placeholder="Enter search query (e.g., 'BRCA1', 'breast cancer[disease]')" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <input type="number" class="form-control form-control-lg" id="maxResults" name="max_results" 
+                                       value="20" min="1" max="100" placeholder="Max results">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-light btn-lg w-100">
+                        <i class="fas fa-search"></i> Search Genes
+                    </button>
+                </form>
+            </div>
+
+            <!-- Symbol Search Tab -->
+            <div class="tab-pane fade" id="symbol-search" role="tabpanel">
+                <form id="symbolSearchForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" id="symbolQuery" name="symbol" 
+                                       placeholder="Gene symbol (e.g., BRCA1, TP53)" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <select class="form-control form-control-lg" id="organismSelect" name="organism">
+                                    <option value="">All organisms</option>
+                                    <option value="human">Human</option>
+                                    <option value="Homo sapiens">Homo sapiens</option>
+                                    <option value="mouse">Mouse</option>
+                                    <option value="Mus musculus">Mus musculus</option>
+                                    <option value="rat">Rat</option>
+                                    <option value="Rattus norvegicus">Rattus norvegicus</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-light btn-lg w-100">
+                        <i class="fas fa-tag"></i> Search by Symbol
+                    </button>
+                </form>
+            </div>
+
+            <!-- Gene ID Tab -->
+            <div class="tab-pane fade" id="gene-id" role="tabpanel">
+                <form id="geneIdForm">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" id="geneIdInput" name="gene_id" 
+                                       placeholder="Enter NCBI Gene ID (e.g., 672 for BRCA1)" required>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-light btn-lg w-100">
+                        <i class="fas fa-hashtag"></i> Get Gene Info
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Example queries -->
+        <div class="mt-4">
+            <h6>Example searches:</h6>
+            <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-outline-light btn-sm example-btn" data-query="BRCA1[gene] AND human[organism]">BRCA1 in human</button>
+                <button class="btn btn-outline-light btn-sm example-btn" data-query="breast cancer[disease]">Breast cancer genes</button>
+                <button class="btn btn-outline-light btn-sm example-btn" data-query="TP53">TP53</button>
+                <button class="btn btn-outline-light btn-sm example-btn" data-query="diabetes[disease] AND human[organism]">Diabetes genes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <!-- Loading indicator -->
+    <div id="loadingIndicator" class="text-center loading">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Searching NCBI database...</p>
+    </div>
+
+    <!-- Results container -->
+    <div id="results" style="display: none;">
+        <h3 id="resultsTitle"></h3>
+        <div id="resultsContent"></div>
+    </div>
+
+    <!-- Welcome message -->
+    <div id="welcomeSection">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="text-center p-4">
+                    <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                    <h5>Gene Search</h5>
+                    <p>Search for genes using flexible queries including disease names, gene symbols, or complex expressions.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4">
+                    <i class="fas fa-info-circle fa-3x text-success mb-3"></i>
+                    <h5>Detailed Information</h5>
+                    <p>Get comprehensive gene information including chromosomal location, aliases, and functional summaries.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4">
+                    <i class="fas fa-globe fa-3x text-warning mb-3"></i>
+                    <h5>Cross-Species</h5>
+                    <p>Compare genes across different organisms including human, mouse, rat, and many others.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h5><i class="fas fa-star text-warning"></i> Popular Genes</h5>
+                <div class="list-group">
+                    <a href="/gene/672" class="list-group-item list-group-item-action">
+                        <strong>BRCA1</strong> (ID: 672) - Breast cancer gene
+                    </a>
+                    <a href="/gene/7157" class="list-group-item list-group-item-action">
+                        <strong>TP53</strong> (ID: 7157) - Tumor suppressor
+                    </a>
+                    <a href="/gene/348" class="list-group-item list-group-item-action">
+                        <strong>APOE</strong> (ID: 348) - Alzheimer's risk factor
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h5><i class="fas fa-lightbulb text-info"></i> Quick Tips</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success"></i> Use [gene] to search for specific genes</li>
+                    <li><i class="fas fa-check text-success"></i> Use [disease] to find disease-related genes</li>
+                    <li><i class="fas fa-check text-success"></i> Add AND human[organism] to filter by species</li>
+                    <li><i class="fas fa-check text-success"></i> Gene symbols like BRCA1, TP53 work great</li>
+                </ul>
+            </div>
+        </div><br>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Example query buttons
+    $('.example-btn').click(function() {
+        const query = $(this).data('query');
+        $('#searchQuery').val(query);
+        $('#gene-search-tab').click();
+    });
+
+    // Gene search form
+    $('#geneSearchForm').submit(function(e) {
+        console.log('Gene search form submitted');
+        e.preventDefault();
+        
+        // Extract form values manually
+        const query = $('#searchQuery').val();
+        const maxResults = $('#maxResults').val();
+        
+        console.log('Query:', query, 'Max Results:', maxResults);
+        
+        if (!query) {
+            alert('Please enter a search query');
+            return;
+        }
+        
+        // Use simple object instead of FormData
+        const data = {
+            query: query,
+            max_results: maxResults
+        };
+        
+        searchGenes(data);
+    });
+
+    // Symbol search form
+    $('#symbolSearchForm').submit(function(e) {
+        console.log('Symbol search form submitted');
+        e.preventDefault();
+        
+        // Extract form values manually
+        const symbol = $('#symbolQuery').val();
+        const organism = $('#organismSelect').val();
+        
+        console.log('Symbol:', symbol, 'Organism:', organism);
+        
+        if (!symbol) {
+            alert('Please enter a gene symbol');
+            return;
+        }
+        
+        // Use simple object instead of FormData
+        const data = {
+            symbol: symbol,
+            organism: organism
+        };
+        
+        searchBySymbol(data);
+    });
+
+    // Gene ID form
+    $('#geneIdForm').submit(function(e) {
+        e.preventDefault();
+        const geneId = $('#geneIdInput').val();
+        if (geneId) {
+            window.location.href = `/gene/${geneId}`;
+        }
+    });
+
+    function showLoading() {
+        $('#welcomeSection').hide();
+        $('#results').hide();
+        $('#loadingIndicator').show();
+    }
+
+    function hideLoading() {
+        $('#loadingIndicator').hide();
+    }
+
+    function showResults(title, content) {
+        hideLoading();
+        $('#resultsTitle').text(title);
+        $('#resultsContent').html(content);
+        $('#results').show();
+    }
+
+    function searchGenes(data) {
+        console.log('Starting gene search...');
+        console.log('Search data:', data);
+        showLoading();
+        
+        $.post('/api/search/genes', data)
+            .done(function(response) {
+                console.log('Gene search response:', response);
+                if (response.success) {
+                    const data = response.data;
+                    let html = `
+                        <div class="alert alert-info">
+                            <strong>Found ${data.count} genes</strong> for query: "${data.query}"
+                        </div>
+                    `;
+                    
+                    if (data.ids.length > 0) {
+                        html += '<div class="row">';
+                        data.ids.slice(0, 10).forEach(function(id) {
+                            html += `
+                                <div class="col-md-6 mb-3">
+                                    <div class="gene-card">
+                                        <h6>Gene ID: ${id}</h6>
+                                        <a href="/gene/${id}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-info-circle"></i> View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                        
+                        if (data.count > 10) {
+                            html += `<p class="text-muted">Showing first 10 results out of ${data.count} total results.</p>`;
+                        }
+                    }
+                    
+                    showResults(`Search Results (${data.count} found)`, html);
+                } else {
+                    showResults('Error', '<div class="alert alert-danger">Search failed</div>');
+                }
+            })
+            .fail(function(xhr) {
+                console.log('Gene search failed:', xhr);
+                const error = xhr.responseJSON?.detail || 'Search failed';
+                showResults('Error', `<div class="alert alert-danger">${error}</div>`);
+            });
+    }
+
+    function searchBySymbol(data) {
+        console.log('Starting symbol search...');
+        console.log('Search data:', data);
+        showLoading();
+        
+        $.post('/api/search/symbol', data)
+            .done(function(response) {
+                console.log('Symbol search response:', response);
+                if (response.success) {
+                    const data = response.data;
+                    let html = `
+                        <div class="alert alert-info">
+                            <strong>Found ${data.count} genes</strong> for symbol: "${data.symbol}"
+                            ${data.organism ? ` in organism: "${data.organism}"` : ''}
+                        </div>
+                    `;
+                    
+                    if (data.genes.length > 0) {
+                        data.genes.forEach(function(gene) {
+                            html += `
+                                <div class="gene-card">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <h5>${gene.name} <small class="text-muted">(ID: ${gene.gene_id})</small></h5>
+                                            <p class="mb-2">${gene.description}</p>
+                                            <small class="text-muted">
+                                                <i class="fas fa-map-marker-alt"></i> ${gene.organism}
+                                                ${gene.chromosome ? ` | Chromosome ${gene.chromosome}` : ''}
+                                            </small>
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <a href="/gene/${gene.gene_id}" class="btn btn-primary">
+                                                <i class="fas fa-info-circle"></i> View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        html += '<div class="alert alert-warning">No genes found for this symbol.</div>';
+                    }
+                    
+                    showResults(`Symbol Search Results (${data.count} found)`, html);
+                } else {
+                    showResults('Error', '<div class="alert alert-danger">Symbol search failed</div>');
+                }
+            })
+            .fail(function(xhr) {
+                console.log('Symbol search failed:', xhr);
+                const error = xhr.responseJSON?.detail || 'Symbol search failed';
+                showResults('Error', `<div class="alert alert-danger">${error}</div>`);
+            });
+    }
+});
+</script>
+{% endblock %}
