@@ -1,4 +1,5 @@
-from ncbi_gene_mcp_client.web_app import app
+"""
+Vercel entry point for NCBI Gene MCP Client.
+"""
 
-# This is the entry point for Vercel
-handler = app
+from .app import handler
