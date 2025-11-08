@@ -4,6 +4,10 @@
 
 This project provides a Model Context Protocol (MCP) client that interfaces with the NCBI Entrez API to fetch detailed information about genes and proteins. It's designed to be used both as a standalone command-line tool and as an MCP server for integration with MCP-compatible clients.
 
+<a href="https://glama.ai/mcp/servers/@mohammadnajeeb/ncbi_gene_mcp_client">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@mohammadnajeeb/ncbi_gene_mcp_client/badge" alt="NCBI Gene Server MCP server" />
+</a>
+
 ## 🚀 Features
 
 - **Gene Search**: Search for genes using flexible queries
@@ -382,4 +386,4 @@ MIT License - see LICENSE file for details.
 
 ## Support
 
-For issues and questions, please use the GitHub issue tracker. 
+For issues and questions, please use the GitHub issue tracker.
